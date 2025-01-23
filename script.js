@@ -17,16 +17,8 @@ ScaleFactor_speed和updateTime
 const pointWidth = 3;
 const lineWidth = 2;
 //theme
-const theme = 0;//0:深色,1:浅色
-
-var lineColor,bgColor;
-if(theme){
-    lineColor = [0,0,0];
-    bgColor = [255,255,255];
-}else{
-    lineColor = [255,255,255];
-    bgColor = [0,0,0];
-}
+const lineColor = [255,255,255];
+const bgColor = [0,0,0];
 function setTheme(){
     document.body.style.backgroundColor = 
     `rgb(${bgColor[0]},${bgColor[1]},${bgColor[2]})`;
@@ -97,17 +89,20 @@ function drawAllLines(){
     }
 }
 function movePoints(){
-    //计算鼠标相对于canvas的坐标
     for(let i = 0; i < pointsNum; i++){
         let vector = vectorList[i];
         let point = pointList[i];
         point.x += vector.x;
         point.y += vector.y;
-        if(point.x < 0 || point.x > width){
-            vector.x = -vector.x;
+        if(point.x < 0){
+            vector.x = Math.abs(vector.x);
+        }if(point.x > width){
+            vector.x = -Math.abs(vector.x);
         }
-        if(point.y < 0 || point.y > height){
-            vector.y = -vector.y;
+        if(point.y < 0){
+            vector.y = Math.abs(vector.y);
+        }if(point.y > height){
+            vector.y = -Math.abs(vector.y);
         }
     }
 }

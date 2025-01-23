@@ -1,13 +1,13 @@
 //constants
-const height = 500;
-const width = 500;
+const height = 500;//画布高度
+const width = 500;//画布宽度
 const pointsDensity = 1.5;//密度(点/100*100像素)
 const pointsNum = pointsDensity * ((width * height)/(100*100));
 const maxDis = 150;//两点允许被线段连接的最大距离
 
 
 const ScaleFactor_speed = 2;//速度的比例因子
-const updateTime = 10;
+const updateTime = 10;//更新频率(毫秒)
 /*
 ScaleFactor_speed和updateTime
 两个变量的乘积决定了点的移动速度,updateTime越小,移动越流畅
@@ -15,19 +15,22 @@ ScaleFactor_speed和updateTime
 所以放弃了
 */
 
-const pointWidth = 3;
-const lineWidth = 2;
+const pointWidth = 3;//点的宽度(一般不显示)
+const lineWidth = 2;//线条宽度
 //theme
-const lineColor = [255,255,255];
-const bgColor = [0,0,0];
+const lineColor = [255,255,255];//普通颜色
+const bgColor = [0,0,0];//背景颜色
 function setTheme(){
     document.body.style.backgroundColor = 
     `rgb(${bgColor[0]},${bgColor[1]},${bgColor[2]})`;
 }
 //specialColor
-var specialColor = [255,255,255];
-var specialColor_vector = [];
-const specialColor_speed = 15;
+const isSpecialInNormalOn = false;//默认情况下的特殊颜色开启状态
+const isSpecialInSpecialOn = true;//特殊情况下特殊颜色开启状态(1.线段连接到鼠标时)
+
+var specialColor = [255,255,255];//特殊颜色初始值
+var specialColor_vector = [];//特殊颜色向量
+const specialColor_speed = 1;//特殊颜色变化速度
 function setSpecialColor_vector(){
     let first = (Math.random()*2-1) * specialColor_speed;
     let more = specialColor_speed-Math.abs(first);
@@ -107,7 +110,7 @@ function drawAllLines(){
             if(pointList[i].x==null||pointList[j].x==null
             ||pointList[i].y==null||pointList[j].y==null
             ){continue;}
-            let isSpecial = false;
+            let isSpecial = isSpecialInNormalOn;
             if(pointList[i]==mouse||pointList[j]==mouse){isSpecial = true;}
             drawLine(pointList[i],pointList[j],isSpecial);
         }
@@ -144,15 +147,14 @@ function removeMouse(){
     mouse.y=null;
 }
 cvsEL.addEventListener('mousemove',addMouse);
+cvsEL.addEventListener('touchmove',addMouse);
 cvsEL.addEventListener('mouseout',removeMouse);
+cvsEL.addEventListener('touchend',removeMouse);
 setInterval(()=>{
     ctx.clearRect(0,0,width,height);
     movePoints();
     drawAllLines();
-    specialColor_go();
+    if(isSpecialInSpecialOn||isSpecialInNormalOn){
+        specialColor_go();
+    }
 },updateTime);
-cvsEL.addEventListener('click',()=>{
-    //全屏
-    if(document.fullscreenElement){document.exitFullscreen();
-    }else{cvsEL.requestFullscreen();}
-})

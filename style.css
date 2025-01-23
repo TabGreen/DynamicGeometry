@@ -1,3 +1,4 @@
 #canvas{
     position: fixed;
+    overflow: hidden;
 }

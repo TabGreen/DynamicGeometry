@@ -1,8 +1,9 @@
 //constants
 const height = 500;
 const width = 500;
-const pointsNum = 30;
-const maxDis = 130;//两点允许被线段连接的最大距离
+const pointsDensity = 0.7;//密度(点/100*100像素)
+const pointsNum = pointsDensity * ((width * height)/(100*100));
+const maxDis = 150;//两点允许被线段连接的最大距离
 
 
 const ScaleFactor_speed = 2;//速度的比例因子
@@ -125,3 +126,8 @@ setInterval(()=>{
     movePoints();
     drawAllLines();
 },updateTime);
+cvsEL.addEventListener('click',()=>{
+    //全屏
+    if(document.fullscreenElement){document.exitFullscreen();
+    }else{cvsEL.requestFullscreen();}
+})

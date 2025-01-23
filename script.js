@@ -1,7 +1,7 @@
 //constants
 const height = 500;
 const width = 500;
-const pointsDensity = 0.7;//密度(点/100*100像素)
+const pointsDensity = 1.5;//密度(点/100*100像素)
 const pointsNum = pointsDensity * ((width * height)/(100*100));
 const maxDis = 150;//两点允许被线段连接的最大距离
 
@@ -23,6 +23,28 @@ const bgColor = [0,0,0];
 function setTheme(){
     document.body.style.backgroundColor = 
     `rgb(${bgColor[0]},${bgColor[1]},${bgColor[2]})`;
+}
+//specialColor
+var specialColor = [255,255,255];
+var specialColor_vector = [];
+const specialColor_speed = 15;
+function setSpecialColor_vector(){
+    let first = (Math.random()*2-1) * specialColor_speed;
+    let more = specialColor_speed-Math.abs(first);
+    let second = (Math.random()*2-1) * more;
+    more -= Math.abs(second);
+    let third = (Math.random()*2-1) * more;
+    specialColor_vector = [first,second,third];
+}
+setSpecialColor_vector();
+function specialColor_go(){
+    for(let i=0;i<specialColor_vector.length;i++){
+        specialColor[i] += specialColor_vector[i];
+        if(specialColor[i]>255){specialColor[i] = 255;
+        setSpecialColor_vector();}
+        if(specialColor[i]<0){specialColor[i] = 0;
+        setSpecialColor_vector();}
+    }
 }
 //ctx
 const cvsEL = document.getElementById('canvas');
@@ -67,7 +89,7 @@ for(let i = 0; i < pointsNum; i++){
 }
 
 //drawLines
-function drawLine(point1,point2){
+function drawLine(point1,point2,isSpecial=false){
     ctx.beginPath();
     ctx.moveTo(point1.x,point1.y);
     ctx.lineTo(point2.x,point2.y);
@@ -76,6 +98,7 @@ function drawLine(point1,point2){
     let a = 1;let dis_ = Math.sqrt(Math.pow(point1.x-point2.x,2)+
         Math.pow(point1.y-point2.y,2));if(dis_<maxDis){a=(maxDis-dis_)/dis_}else{a=0;}
     ctx.strokeStyle = `rgba(${lineColor[0]},${lineColor[1]},${lineColor[2]},${a})`;
+    if(isSpecial){ctx.strokeStyle = `rgba(${specialColor[0]},${specialColor[1]},${specialColor[2]},${a})`;}
     ctx.stroke();
 }
 function drawAllLines(){
@@ -84,8 +107,9 @@ function drawAllLines(){
             if(pointList[i].x==null||pointList[j].x==null
             ||pointList[i].y==null||pointList[j].y==null
             ){continue;}
-
-            drawLine(pointList[i],pointList[j]);
+            let isSpecial = false;
+            if(pointList[i]==mouse||pointList[j]==mouse){isSpecial = true;}
+            drawLine(pointList[i],pointList[j],isSpecial);
         }
     }
 }
@@ -125,6 +149,7 @@ setInterval(()=>{
     ctx.clearRect(0,0,width,height);
     movePoints();
     drawAllLines();
+    specialColor_go();
 },updateTime);
 cvsEL.addEventListener('click',()=>{
     //全屏

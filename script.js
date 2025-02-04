@@ -161,6 +161,6 @@ setInterval(()=>{
 
 //禁止移动端缩放
 document.addEventListener('touchstart', function(event) {
-if (event.touches.length > 0) {event.preventDefault();}},{
+if (event.touches.length > 1) {event.preventDefault();}},{
 passive:false});document.addEventListener('gesturestart',
 function(event) {event.preventDefault();});
